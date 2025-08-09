@@ -18,6 +18,27 @@ export async function GET(request: Request) {
     );
   }
 
-  // Redirect straight to home (or change "/" to whatever page you want)
-  return NextResponse.redirect(new URL("/", request.url));
+  // Get the logged-in user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user || !user.email) {
+    return NextResponse.redirect(new URL("/login?error=user_not_found", request.url));
+  }
+
+  // Check if the user exists in "profiles" table
+  const { data: existingProfile } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("id", user.id)
+    .single();
+
+  if (existingProfile) {
+    // Returning user
+    return NextResponse.redirect(new URL("/", request.url));
+  } else {
+    // New user — redirect to onboarding
+    return NextResponse.redirect(new URL("/access", request.url));
+  }
 }
