@@ -19,26 +19,29 @@ export async function GET(request: Request) {
   }
 
   // Get the logged-in user
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user || !user.email) {
     return NextResponse.redirect(new URL("/login?error=user_not_found", request.url));
   }
 
-  // Check if the user exists in "profiles" table
+  // Check if the user exists in "profiles" table, if not, create them
   const { data: existingProfile } = await supabase
     .from("profiles")
     .select("id")
     .eq("id", user.id)
     .single();
 
-  if (existingProfile) {
-    // Returning user
-    return NextResponse.redirect(new URL("/", request.url));
-  } else {
-    // New user — redirect to onboarding
-    return NextResponse.redirect(new URL("/access", request.url));
+  if (!existingProfile) {
+    await supabase
+      .from("profiles")
+      .insert({
+        id: user.id,
+        email: user.email,
+        created_at: new Date().toISOString(),
+      });
   }
+
+  // ✅ Redirect to the main app page after successful login
+  return NextResponse.redirect(new URL("/app", request.url));
 }
