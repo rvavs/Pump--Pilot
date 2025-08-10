@@ -1,7 +1,6 @@
-import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from '@supabase/supabase-js';
 
-// Server-side Supabase (for route handlers / server components)
-export const createServerClient = () => {
-  return createServerComponentClient({ cookies });
-};
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
