@@ -4,7 +4,7 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function AccessPage() {
-  const user = null; // 🚨 TEMP: no auth check
+  const user = null; // TEMP: no auth check
 
   return (
     <main className="min-h-screen bg-black text-zinc-100 px-6 py-20 flex flex-col items-center">
