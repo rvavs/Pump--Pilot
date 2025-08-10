@@ -2,6 +2,5 @@
 import { createClient } from "./supabaseClient";
 
 export function createServerClient() {
-  // just reuse the stubbed browser client
   return createClient();
 }
