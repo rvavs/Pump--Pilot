@@ -1,8 +1,7 @@
 import { cookies } from "next/headers";
 import { createServerClient as createSupabaseServerClient } from "@supabase/ssr";
-// import type { Database } from "@/types/db"; // optional
 
-export function createServerClient() {
+export function somethingElse() {
   const cookieStore = cookies();
   return createSupabaseServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,3 +17,6 @@ export function createServerClient() {
     }
   );
 }
+
+// ✅ Add this line to also export it under the name your imports expect
+export { somethingElse as createServerClient };
