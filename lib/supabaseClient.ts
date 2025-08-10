@@ -1,6 +1,5 @@
 // Temporary stub so the app can build without @supabase/ssr
 export function createClient() {
-  // very tiny fake client — enough so calls won't crash hard
   return {
     auth: {
       getUser: async () => ({ data: { user: null }, error: null }),
