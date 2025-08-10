@@ -1,6 +1,6 @@
-// Temporary stub so the app can build without @supabase/ssr
-import { createClient } from "./supabaseClient";
+import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
-export function createServerClient() {
-  return createClient();
-}
+export const createServerClient = () => {
+  return createServerComponentClient({ cookies });
+};
