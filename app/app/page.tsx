@@ -1,22 +1,30 @@
-import { redirect } from "next/navigation";
-import { supabaseServer } from "@/lib/supabaseServer";
+'use client';
 
-export default async function AppHome() {
-  const supabase = supabaseServer();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
+
+export default function AppPage() {
+  const [session, setSession] = useState<any>(null);
+  const bypass = process.env.NEXT_PUBLIC_BYPASS_AUTH === '1';
+
+  useEffect(() => {
+    if (bypass) return;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) {
+        window.location.href = '/login';
+      } else {
+        setSession(data.session);
+      }
+    });
+  }, [bypass]);
+
+  if (!bypass && !session) return <p className="p-6 text-zinc-400">Loading…</p>;
+
   return (
-    <section>
-      <h1 className="text-xl font-semibold">Welcome back</h1>
-      <p className="text-zinc-400">You are signed in as {user.email}.</p>
-      <div className="mt-4">
-        <form action="/api/sets" method="post">
-          <input name="movement" placeholder="Movement (e.g., Incline DB Press)" className="w-80 bg-black border border-zinc-700 text-zinc-200 p-2 rounded" />
-          <input name="reps" placeholder="Reps" className="w-20 ml-2 bg-black border border-zinc-700 text-zinc-200 p-2 rounded" />
-          <input name="load" placeholder="Load" className="w-20 ml-2 bg-black border border-zinc-700 text-zinc-200 p-2 rounded" />
-          <button className="ml-2 bg-emerald-600 px-3 py-2 rounded">Save set</button>
-        </form>
-      </div>
-    </section>
+    <main className="min-h-screen bg-black text-zinc-100 p-6">
+      <h1 className="text-2xl font-bold">Pump Pilot — App</h1>
+      {bypass && <p className="text-amber-400 mt-2">Auth bypass ON (preview mode)</p>}
+      {/* Your dashboard UI goes here */}
+    </main>
   );
 }
