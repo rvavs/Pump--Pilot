@@ -1,24 +1,14 @@
-// /lib/supabaseServer.ts
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
 /**
- * Canonical server-side Supabase client factory.
+ * Factory for a server-side Supabase client bound to cookies.
+ * We export both `createServer` and `supabaseServer` so either name works.
  */
-export function createServerClient() {
-  return createServerComponentClient({ cookies });
-}
+export const createServer = () =>
+  createServerComponentClient({ cookies });
 
-/**
- * Alias to support existing imports in the codebase like:
- *   import { supabaseServer } from "@/lib/supabaseServer";
- *   const supabase = supabaseServer();
- */
-export const supabaseServer = createServerClient;
+export const supabaseServer = createServer;
 
-/**
- * Optional default export so either style works:
- *   import createClient from "@/lib/supabaseServer";
- *   const supabase = createClient();
- */
-export default createServerClient;
+// Optional default (safe to leave here)
+export default createServer;
